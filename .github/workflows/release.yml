@@ -31,6 +31,8 @@ jobs:
           cargo build --release --target x86_64-unknown-linux-gnu
           mv target/x86_64-unknown-linux-gnu/release/figlet figlet-linux-amd64
 
+      - name: test
+        run: ls -lah
       # Create a release-please release (automatically versioned based on conventional commits)
       # - name: Create Release with release-please
       #   uses: googleapis/release-please-action@v3
