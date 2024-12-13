@@ -1,0 +1,50 @@
+name: Release
+
+env:
+  CARGO_TERM_COLOR: always
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libssl-dev pkg-config
+
+      - name: Build for macOS
+        run: |
+          cargo build --release --target x86_64-apple-darwin
+          mv target/x86_64-apple-darwin/release/figlet figlet-darwin-amd64
+
+      - name: Build for Linux
+        run: |
+          cargo build --release --target x86_64-unknown-linux-gnu
+          mv target/x86_64-unknown-linux-gnu/release/figlet figlet-linux-amd64
+
+      # Create a release-please release (automatically versioned based on conventional commits)
+      # - name: Create Release with release-please
+      #   uses: googleapis/release-please-action@v3
+      #   with:
+      #     release-type: rust
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #
+      # # Upload release assets (macOS and Linux binaries)
+      # - name: Upload release assets
+      #   uses: softprops/action-gh-release@v1
+      #   with:
+      #     files: |
+      #       figlet-darwin-amd64
+      #       figlet-linux-amd64
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
